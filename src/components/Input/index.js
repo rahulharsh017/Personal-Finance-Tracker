@@ -1,7 +1,7 @@
 import React from 'react'
 import './style.css'
 
-function Input({label}) {
+function Input({}) {
   return (
     <div>
         <p>{label}</p>
