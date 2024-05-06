@@ -6,7 +6,7 @@
   --theme: #2970ff;
   --black:#000;
   --white:#fff;
-  --shadow:0px 0px 30px 8px rgba(227,227,227,0.75);
+  --shadow:0px 0px 30px 8px rgba(223, 221, 221, 0.856);
 }
 *{
   margin: 0;
@@ -23,7 +23,40 @@ body {
 input {
   font-family: "Montserrat", sans-serif;
 }
+.input-flex{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  box-shadow: 0px 0px 30px 8px rgba(223, 221, 221, 0.856);
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.5rem;
+}
+.input-flex input{
+  border-width: 0;
+  width: 100%;
+  padding: 0.2rem 0rem;
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-bottom: 0;
+}
 
+.input-flex input:focus{
+  outline: none;
+  opacity: 1;
+  transition: all 0.2s;
+}
+
+.select-input{
+  width:30%;
+  margin-right: 10;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 0px 30px 8px rgba(223, 221, 221, 0.856);
+  border-radius: 0.5rem !important;
+  padding: 0.1rem 0.5rem;
+}
 
 
 

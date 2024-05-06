@@ -2,7 +2,7 @@ import React,{useState} from 'react'
 import "./style.css"
 import Input from '../Input'
 import Button from '../Button'
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider } from "firebase/auth";
 import { auth,db,provider } from "../../firebase"
 import { getDoc,setDoc,doc} from 'firebase/firestore';
 import { toast } from 'react-toastify';
@@ -117,6 +117,34 @@ function SignUpSigninComponent() {
         }
         
     }
+
+    function googleAuth(){
+        setLoading(true)
+        try {
+            signInWithPopup(auth, provider)
+            .then((result) => {
+              // This gives you a Google Access Token. You can use it to access the Google API.
+              const credential = GoogleAuthProvider.credentialFromResult(result);
+              const token = credential.accessToken;
+              // The signed-in user info.
+              const user = result.user;
+              createDoc(user)
+              navigate('/dashboard')
+              // IdP data available using getAdditionalUserInfo(result)
+              // ...
+              toast.success("User Logged In Successfully")
+            }).catch((error) => {
+              // Handle Errors here.
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              toast.error(errorMessage)
+            });
+            
+        } catch (error) {
+            toast.error(error.message)  
+        }
+       
+    }
   return (
     <>
     {loginForm ? 
@@ -145,7 +173,7 @@ function SignUpSigninComponent() {
             disabled={loading}
             />
             <p className='p-login'>Or</p>
-            <Button text={loading?"Loading...":"Login using Google"} blue={true} />
+            <Button text={loading?"Loading...":"Login using Google"} blue={true} onClick={googleAuth} />
             <p className='p-login' style={{cursor:'pointer'}} onClick={() => setLoginForm(!loginForm)} >Or Dont Have an Account Already ?Click Here</p>
         </form>
     </div> :<div className='signup-wrapper'>
@@ -184,7 +212,7 @@ function SignUpSigninComponent() {
             disabled={loading}
             />
             <p className='p-login'>Or</p>
-            <Button text={loading?"Loading...":"Sign Up using Google"} blue={true} />
+            <Button text={loading?"Loading...":"Sign Up using Google"} blue={true} onClick={googleAuth}  />
             <p className='p-login' style={{cursor:'pointer'}} onClick={() => setLoginForm(!loginForm)}>Or Have an Account Already ? Click Here</p>
         </form>
     </div>}
