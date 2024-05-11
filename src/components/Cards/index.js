@@ -6,15 +6,18 @@ import Button from '../Button'
 function Cards({
     income,
     expense,
+    onClick,
     currentBalance,
     showIncomeModal,
     showExpenseModal}) {
+
+
   return (
     <div>
         <Row className='my-row'>
            <Card className='my-card' title="Current Balance">
             <p>₹{currentBalance}</p>
-            <Button text="Reset Balance" blue={true} />
+            <Button text="Reset Balance" blue={true} onClick={onClick} />
            </Card>
            <Card className='my-card' title="Total Income">
             <p>₹{income}</p>

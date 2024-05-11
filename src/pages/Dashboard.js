@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react'
 import Header from '../components/Header'
 import Cards from '../components/Cards'
-import { Modal } from 'antd';
+import NoTransactions from '../components/NoTransactions.js'
 import AddExpenseModal from '../components/Modals/addExpense.js'
 import AddIncomeModal from '../components/Modals/addIncome.js'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { addDoc,collection,getDocs,query} from 'firebase/firestore';
 import { db,auth } from '../firebase.js';
 import { toast } from 'react-toastify';
-import moment from 'moment';
+
 import TransactionTable from '../components/TransactionsTable/index.js';
+import ChartComponent from '../components/Charts/index.js'
 
 function Dashboard() {
 
@@ -47,7 +48,7 @@ function Dashboard() {
     };
     addTransaction(newTransaction);
   };
-  async function addTransaction(transaction) {
+  async function addTransaction(transaction,many) {
     try {
       const docRef = await addDoc(
         collection(db, `users/${user.uid}/transactions`),
@@ -55,7 +56,7 @@ function Dashboard() {
       );
       console.log("Document written with ID: ", docRef.id);
      
-        toast.success("Transaction Added!");
+        if(!many) toast.success("Transaction Added!");
         let newArr = transactions;
         newArr.push(transaction);
         setTransactions(newArr);
@@ -64,7 +65,7 @@ function Dashboard() {
     } catch (e) {
       console.error("Error adding document: ", e);
       
-        toast.error("Couldn't add transaction");
+       if(!many) toast.error("Couldn't add transaction");
       
     }
   }
@@ -111,6 +112,18 @@ function Dashboard() {
     
     setLoading(false);
   }
+
+  let sortedTransactions = transactions.sort((a,b) =>{
+    return new Date(a.date ) - new Date(b.date);
+  })
+
+  const resetbalance = (e) =>{
+    e.preventDefault();
+    setIncome(0);
+    setExpenses(0);
+    setCurrentBalance(0);
+    setTransactions([]);
+  }
   return (
     <div>
       <Header />
@@ -120,9 +133,10 @@ function Dashboard() {
         expense={expense}
         currentBalance={currentBalance}
       showExpenseModal={showExpenseModal}
-      showIncomeModal={showIncomeModal} />
+      showIncomeModal={showIncomeModal}
+      onClick={resetbalance} />
     
-
+         {transactions.length != 0 ?<ChartComponent sortedTransactions={sortedTransactions}/> : <NoTransactions />}
         <AddExpenseModal
             isExpenseModalVisible={isExpenseModalVisible}
             handleExpenseCancel={handleExpenseCancel}
@@ -134,7 +148,11 @@ function Dashboard() {
             handleIncomeCancel={handleIncomeCancel}
             onFinish={onFinish}
           /> 
-          <TransactionTable transactions={transactions} />
+          <TransactionTable
+           transactions={transactions}
+           addTransaction={addTransaction}
+           fetchTransactions={fetchTransactions}
+           />
       </>)}
      
 
