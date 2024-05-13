@@ -25,7 +25,7 @@ function SignUpSigninComponent() {
         console.log("confirmpassword",confirmPassword);
 
         if(name!=='' && email!=='' && password!=='' && confirmPassword!==''){
-            if(password == confirmPassword){
+            if(password === confirmPassword){
                 createUserWithEmailAndPassword( auth,email, password)
             .then((userCredential) => {
               // Signed up 
@@ -42,7 +42,7 @@ function SignUpSigninComponent() {
               // ...
             })
             .catch((error) => {
-              const errorCode = error.code;
+              
               const errorMessage = error.message;
               toast.error(errorMessage)
               setLoading(false)
@@ -69,13 +69,12 @@ function SignUpSigninComponent() {
             signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
               // Signed in 
-              const user = userCredential.user;
+             
              toast.success("User Logged In Successfully")
                 setLoading(false)
              navigate('/dashboard')
             })
             .catch((error) => {
-              const errorCode = error.code;
               const errorMessage = error.message;
               setLoading(false)
               toast.error(errorMessage)
@@ -124,8 +123,7 @@ function SignUpSigninComponent() {
             signInWithPopup(auth, provider)
             .then((result) => {
               // This gives you a Google Access Token. You can use it to access the Google API.
-              const credential = GoogleAuthProvider.credentialFromResult(result);
-              const token = credential.accessToken;
+                const credential = GoogleAuthProvider.credentialFromResult(result);
               // The signed-in user info.
               const user = result.user;
               createDoc(user)
@@ -135,7 +133,7 @@ function SignUpSigninComponent() {
               toast.success("User Logged In Successfully")
             }).catch((error) => {
               // Handle Errors here.
-              const errorCode = error.code;
+             
               const errorMessage = error.message;
               toast.error(errorMessage)
             });

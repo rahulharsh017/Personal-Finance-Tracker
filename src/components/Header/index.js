@@ -15,7 +15,7 @@ function Header() {
         if(user){
             navigate('/dashboard')
         }
-    }, [user, loading])
+    }, [user, loading,navigate])
 
     function logoutFnc(){
         try {
@@ -45,6 +45,7 @@ function Header() {
             > 
             <img
             src={user.photoURL ? user.photoURL : userImg}
+            alt='user-img'
             style={{
                 borderRadius: '50%',
                 height: '2rem',

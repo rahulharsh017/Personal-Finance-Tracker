@@ -5,7 +5,7 @@ import NoTransactions from '../components/NoTransactions.js'
 import AddExpenseModal from '../components/Modals/addExpense.js'
 import AddIncomeModal from '../components/Modals/addIncome.js'
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { addDoc,collection,getDocs,query} from 'firebase/firestore';
+import { addDoc,collection,getDocs,query,deleteDoc,doc} from 'firebase/firestore';
 import { db,auth } from '../firebase.js';
 import { toast } from 'react-toastify';
 
@@ -117,13 +117,46 @@ function Dashboard() {
     return new Date(a.date ) - new Date(b.date);
   })
 
-  const resetbalance = (e) =>{
+
+  const resetbalance = async (e) => {
     e.preventDefault();
+
+    
     setIncome(0);
     setExpenses(0);
     setCurrentBalance(0);
     setTransactions([]);
-  }
+
+    try {
+       
+        const user = auth.currentUser;
+        if (!user) {
+            console.error('No user authenticated');
+            return;
+        }
+
+        
+        const userDocRef = doc(db, 'users', user.uid);
+
+        
+        const transactionsCollectionRef = collection(userDocRef, 'transactions');
+
+        
+        const querySnapshot = await getDocs(transactionsCollectionRef);
+
+       
+        querySnapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+        });
+
+       
+        console.log('All transaction documents deleted successfully from Firestore');
+    } catch (error) {
+        
+        console.error('Error deleting transaction documents:', error);
+    }
+}
+  
   return (
     <div>
       <Header />
