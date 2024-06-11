@@ -3,9 +3,25 @@ import { Line,Pie } from '@ant-design/charts';
 
 function ChartComponent({sortedTransactions}) {
  
-    const data = sortedTransactions.map((item) => {
-        return {date:item.date,amount:item.amount};
-    });
+    // const data = sortedTransactions.map((item) => {
+    //     return {date:item.date,amount:item.amount};
+    // });
+    const incomeData = sortedTransactions
+        .filter(transaction => transaction.type === 'income')
+        .reduce((acc, transaction) => {
+            if (acc[transaction.date]) {
+                acc[transaction.date] += transaction.amount;
+            } else {
+                acc[transaction.date] = transaction.amount;
+            }
+            return acc;
+        }, {});
+
+    
+    const processedIncomeData = Object.keys(incomeData).map(date => ({
+        date: date,
+        amount: incomeData[date]
+    }));
 
      const spendingData = sortedTransactions.filter((transactions) =>{
         if(transactions.type === "expense"){
@@ -29,7 +45,7 @@ function ChartComponent({sortedTransactions}) {
         }
     })
     const config = {
-        data:data,
+        data:processedIncomeData,
         xField: 'date',
         yField: 'amount',
         width:600,
@@ -44,7 +60,7 @@ function ChartComponent({sortedTransactions}) {
   return (
     <div className='charts-wrapper'>
     <div >
-        <h2>Your Analytics</h2>
+        <h2>Your Incomes</h2>
         <Line {...config} />
         </div>
         <div>
